@@ -1,7 +1,7 @@
 (() => {
     const CONFIG = {
         username: "akira2337", 
-        repo: "FeedShelf"
+        repo: "secretStorage "
     };
 
     // --- ファイル読み込み関数（前回と同じですがSHA取得が重要） ---
