@@ -20,4 +20,9 @@
         }
     }
     window.launch = _0x9f2a;
+
+    if (response.ok) {
+    sessionStorage.setItem('isLoggedIn', 'true');
+    window.location.href = targetUrl;
+    }
 })();
