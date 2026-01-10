@@ -2,7 +2,7 @@
     // 外部から隠蔽したい固定設定
     const CONFIG = {
         username: "akira2337", // 書き換えてください
-        repo: "FeedShelf"           // 書き換えてください
+        repo: "storage"           // 書き換えてください
     };
 
     // ファイルの中身を読み込む関数（クリック時に実行）
