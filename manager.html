@@ -124,7 +124,15 @@
         
         <input type="hidden" id="currentSha">
         
-        <button onclick="saveFileContent()" style="background: #27ae60; margin-top: 15px;">GitHubに保存（コミット）</button>
+        <button style="background: #27ae60; margin-top: 15px;">GitHubに保存（未実装）</button>
+    </div>
+
+    <div class="input-group" style="background: #dff9fb;">
+        <label>新規ファイル作成:</label>
+        <div style="display: flex; gap: 10px; margin-top: 5px;">
+            <input type="text" id="newFileName" placeholder="newfile.html" style="margin:0;">
+            <button onclick="createNewFile()" style="background: #686de0; margin:0;">作成</button>
+        </div>
     </div>
 </div>
 
