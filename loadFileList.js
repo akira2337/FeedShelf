@@ -88,7 +88,46 @@
         } catch (e) { alert("通信エラー"); }
     }
 
-    // 両方の関数を公開
+    // --- 【新規追加】新しいファイルを作成する関数 ---
+    async function createNewFile() {
+        const token = document.getElementById('ghToken').value;
+        const newName = document.getElementById('newFileName').value;
+        
+        if (!newName) return alert("ファイル名を入力してください（例: memo.txt）");
+        if (!token) return alert("トークンが必要です");
+
+        const url = `https://api.github.com/repos/${CONFIG.username}/${CONFIG.repo}/contents/${newName}`;
+        
+        // 空のファイルを作成（内容は空文字をBase64化したもの）
+        const body = {
+            message: `Create ${newName} via Web Manager`,
+            content: "" // 初期内容は空
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: "PUT",
+                headers: {
+                    "Authorization": `token ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (response.ok) {
+                alert(`ファイル「${newName}」を作成しました！`);
+                document.getElementById('newFileName').value = ""; // 入力欄をクリア
+                loadFileList(); // リストを更新
+            } else {
+                const err = await response.json();
+                alert("作成失敗: " + err.message);
+            }
+        } catch (e) { alert("通信エラーが発生しました"); }
+    }
+
+    // 公開リストに追記
     window.loadFileList = loadFileList;
     window.saveFileContent = saveFileContent;
+    window.createNewFile = createNewFile;
+    
 })();
