@@ -1,17 +1,134 @@
-# python-study
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My GitHub Portal</title>
+    <style>
+        /* 基本スタイル */
+        :root {
+            --primary-color: #2f3640;
+            --accent-color: #0097e6;
+            --bg-color: #f5f6fa;
+            --text-color: #2f3640;
+        }
 
-Pythonの基礎学習用リポジトリです。  
-VSCodeでコードを書き、GitHubにアップする練習も兼ねています。
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.6;
+        }
 
-## 学習目的
-- Pythonの基本文法を理解する
-- 小さなコードを書いて動かせるようになる
-- Git / GitHub を使った管理に慣れる
+        /* ナビゲーション */
+        nav {
+            background: var(--primary-color);
+            padding: 1rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-## 学習環境
-- OS: macOS
-- Editor: VSCode
-- Language: Python 3
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin-left: 15px;
+        }
 
-## 学習ログ
-- Day1: test.py を作成し、GitHubにpushした
+        /* ヒーローセクション */
+        header {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: linear-gradient(135deg, #2f3640, #191d22);
+            color: white;
+        }
+
+        /* メインコンテンツ（カード一覧） */
+        .container {
+            max-width: 1000px;
+            margin: -50px auto 50px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card h2 {
+            color: var(--accent-color);
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <strong>My Project</strong>
+        <div>
+            <a href="index.html">Home</a>
+            <a href="about.html">About</a>
+            <a href="contact.html">Contact</a>
+        </div>
+    </nav>
+
+    <header>
+        <h1>Welcome to My GitHub Pages</h1>
+        <p>ここから様々なページへアクセスできます</p>
+    </header>
+
+    <main class="container">
+        <div class="card">
+            <h2>About Me</h2>
+            <p>私のプロフィールやスキルを紹介するページです。</p>
+            <a href="about.html" class="btn">詳しく見る</a>
+        </div>
+
+        <div class="card">
+            <h2>Portfolio</h2>
+            <p>これまでに作成したプロジェクトを掲載しています。</p>
+            <a href="portfolio.html" class="btn">作品を見る</a>
+        </div>
+
+        <div class="card">
+            <h2>Contact</h2>
+            <p>外部SNSやメールでの連絡先はこちらです。</p>
+            <a href="contact.html" class="btn">連絡する</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 My GitHub Pages. Built with HTML & CSS.</p>
+    </footer>
+
+</body>
+</html>
