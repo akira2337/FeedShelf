@@ -3,9 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My GitHub Portal</title>
+    <title>Portal - 6 Sections</title>
     <style>
-        /* 基本スタイル */
         :root {
             --primary-color: #2f3640;
             --accent-color: #0097e6;
@@ -21,23 +20,33 @@
             line-height: 1.6;
         }
 
-        /* ナビゲーション */
+        /* ナビゲーション - リンクが増えても綺麗に並ぶように調整 */
         nav {
             background: var(--primary-color);
-            padding: 1rem;
+            padding: 1rem 2rem;
             color: white;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            flex-wrap: wrap; /* スマホで溢れた時に折り返す設定 */
         }
 
-        nav a {
+        .nav-links {
+            display: flex;
+            gap: 15px; /* リンク同士の間隔 */
+        }
+
+        .nav-links a {
             color: white;
             text-decoration: none;
-            margin-left: 15px;
+            font-size: 0.9rem;
+            transition: color 0.3s;
         }
 
-        /* ヒーローセクション */
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
         header {
             text-align: center;
             padding: 4rem 1rem;
@@ -45,12 +54,12 @@
             color: white;
         }
 
-        /* メインコンテンツ（カード一覧） */
         .container {
             max-width: 1000px;
             margin: -50px auto 50px;
             padding: 0 20px;
             display: grid;
+            /* ここで3列を定義。画面が狭いと自動で2列や1列になります */
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 20px;
         }
@@ -70,6 +79,7 @@
 
         .card h2 {
             color: var(--accent-color);
+            margin-top: 0;
         }
 
         .btn {
@@ -85,7 +95,7 @@
         footer {
             text-align: center;
             padding: 2rem;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: #7f8c8d;
         }
     </style>
@@ -94,61 +104,61 @@
 
     <nav>
         <strong>My Project</strong>
-        <div>
+        <div class="nav-links">
             <a href="index.html">Home</a>
             <a href="about.html">About</a>
+            <a href="portfolio.html">Portfolio</a>
+            <a href="blog.html">Blog</a>
+            <a href="download.html">Download</a>
             <a href="contact.html">Contact</a>
-            <a href="index.html">Hom</a>
-            <a href="about.html">Abou</a>
-            <a href="contact.html">Contac</a>
         </div>
     </nav>
 
     <header>
-        <h1>Welcome to My GitHub Pages</h1>
-        <p>ここから様々なページへアクセスできます</p>
+        <h1>Member Portal</h1>
+        <p>すべてのコンテンツにアクセス可能です</p>
     </header>
 
     <main class="container">
         <div class="card">
             <h2>About Me</h2>
-            <p>私のプロフィールやスキルを紹介するページです。</p>
+            <p>プロフィールやスキルを紹介します。</p>
             <a href="about.html" class="btn">詳しく見る</a>
         </div>
 
         <div class="card">
             <h2>Portfolio</h2>
-            <p>これまでに作成したプロジェクトを掲載しています。</p>
+            <p>これまでの制作物の一覧です。</p>
             <a href="portfolio.html" class="btn">作品を見る</a>
+        </div>
+
+        <div class="card">
+            <h2>Blog</h2>
+            <p>日々の活動や技術メモを掲載します。</p>
+            <a href="blog.html" class="btn">読む</a>
+        </div>
+
+        <div class="card">
+            <h2>Download</h2>
+            <p>便利なツールや資料の配布場所です。</p>
+            <a href="download.html" class="btn">保存する</a>
+        </div>
+
+        <div class="card">
+            <h2>Gallery</h2>
+            <p>制作した画像や写真を公開しています。</p>
+            <a href="gallery.html" class="btn">開く</a>
         </div>
 
         <div class="card">
             <h2>Contact</h2>
-            <p>外部SNSやメールでの連絡先はこちらです。</p>
-            <a href="contact.html" class="btn">連絡する</a>
-        </div>
-
-        <div class="card">
-            <h2>About</h2>
-            <p>私のプロフィールやスキルを紹介するページです。</p>
-            <a href="about.html" class="btn">詳しく見る</a>
-        </div>
-
-        <div class="card">
-            <h2>Portfoli</h2>
-            <p>これまでに作成したプロジェクトを掲載しています。</p>
-            <a href="portfolio.html" class="btn">作品を見る</a>
-        </div>
-
-        <div class="card">
-            <h2>Contac</h2>
-            <p>外部SNSやメールでの連絡先はこちらです。</p>
+            <p>お問い合わせ・メッセージはこちら。</p>
             <a href="contact.html" class="btn">連絡する</a>
         </div>
     </main>
 
     <footer>
-        <p>&copy; 2024 My GitHub Pages. Built with HTML & CSS.</p>
+        <p>&copy; 2026 My GitHub Pages. Securely Hosted.</p>
     </footer>
 
 </body>
