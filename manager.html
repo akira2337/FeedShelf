@@ -1,0 +1,17 @@
+<div class="container">
+    <h1>GitHub Manager</h1>
+    
+    <input type="password" id="ghToken" placeholder="GitHub Token (ghp_...)を入力">
+    <button onclick="loadFileList()">ファイル一覧を取得</button>
+
+    <ul id="fileList"></ul>
+
+    <hr>
+    
+    <div>現在選択中: <span id="currentPath">なし</span></div>
+    <textarea id="editor" style="width: 100%; height: 300px;" placeholder="ファイルを選択するとここに中身が表示されます"></textarea>
+    
+    <input type="hidden" id="currentSha">
+</div>
+
+<script src="loadFileList.js"></script>
