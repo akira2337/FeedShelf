@@ -1,17 +1,134 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GitHub Manager - Test</title>
+
+    <script>
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            alert("ログインが必要です");
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <style>
+        :root {
+            --primary-color: #2f3640;
+            --accent-color: #0097e6;
+            --bg-color: #f5f6fa;
+        }
+
+        body {
+            font-family: sans-serif;
+            background-color: var(--bg-color);
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h1 { color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; }
+
+        .input-group { margin-bottom: 20px; background: #eee; padding: 15px; border-radius: 8px; }
+        
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+
+        button {
+            margin-top: 10px;
+            background: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover { opacity: 0.9; }
+
+        /* ファイルリストのスタイル */
+        #fileList {
+            list-style: none;
+            padding: 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        #fileList li {
+            background: #f0f0f0;
+            border: 1px solid #ccc;
+            padding: 6px 12px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: 0.2s;
+        }
+
+        #fileList li:hover { background: var(--accent-color); color: white; border-color: var(--accent-color); }
+
+        /* エディタエリア */
+        .editor-section { margin-top: 30px; }
+        .file-info { font-size: 0.9rem; color: #666; margin-bottom: 5px; }
+        
+        textarea {
+            width: 100%;
+            height: 400px;
+            font-family: 'Courier New', Courier, monospace;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            background: #fafafa;
+        }
+
+        .nav-back { margin-bottom: 20px; display: block; text-decoration: none; color: var(--accent-color); font-weight: bold; }
+    </style>
+</head>
+<body>
+
 <div class="container">
+    <a href="#" onclick="history.back()" class="nav-back">← ポータルに戻る</a>
+    
     <h1>GitHub Manager</h1>
-    
-    <input type="password" id="ghToken" placeholder="GitHub Token (ghp_...)を入力">
-    <button onclick="loadFileList()">ファイル一覧を取得</button>
 
-    <ul id="fileList"></ul>
+    <div class="input-group">
+        <label for="ghToken">Personal Access Token (PAT):</label>
+        <input type="password" id="ghToken" placeholder="ghp_xxxxxxxxxxxxxxx">
+        <button onclick="loadFileList()">ファイル一覧を取得</button>
+    </div>
 
-    <hr>
-    
-    <div>現在選択中: <span id="currentPath">なし</span></div>
-    <textarea id="editor" style="width: 100%; height: 300px;" placeholder="ファイルを選択するとここに中身が表示されます"></textarea>
-    
-    <input type="hidden" id="currentSha">
+    <h3>Repository Files</h3>
+    <ul id="fileList">
+        </ul>
+
+    <div class="editor-section">
+        <div class="file-info">選択中: <span id="currentPath">なし</span></div>
+        <textarea id="editor" placeholder="ファイルを選択するとここに中身が表示されます"></textarea>
+        
+        <input type="hidden" id="currentSha">
+        
+        <button style="background: #27ae60; margin-top: 15px;">GitHubに保存（未実装）</button>
+    </div>
 </div>
 
 <script src="loadFileList.js"></script>
+
+</body>
+</html>
