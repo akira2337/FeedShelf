@@ -11,6 +11,7 @@
         try {
             const _0x8899 = await fetch(_0x4455, { method: _0x4a21[9] });
             if (_0x8899[_0x4a21[10]]) {
+                sessionStorage.setItem('isLoggedIn', 'true');
                 window.location.href = _0x4455;
             } else {
                 document.getElementById(_0x4a21[14])[_0x4a21[15]] = "\u30a2\u30af\u30bb\u30b9\u6a29\u9650\u304c\u3042\u308a\u307e\u305b\u3093";
@@ -20,9 +21,4 @@
         }
     }
     window.launch = _0x9f2a;
-
-    if (response.ok) {
-    sessionStorage.setItem('isLoggedIn', 'true');
-    window.location.href = targetUrl;
-    }
 })();
