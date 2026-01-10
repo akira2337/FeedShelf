@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Storage Manager</title>
+    <title>GitHub Manager - Dark</title>
 
     <script>
         if (sessionStorage.getItem('isLoggedIn') !== 'true') {
@@ -13,22 +13,24 @@
 
     <style>
         :root {
-            --bg: #1a1a1a;
-            --panel: #242424;
-            --input-bg: #2d2d2d;
-            --border: #3d3d3d;
-            --text: #e0e0e0;
-            --accent: #3498db;
-            --danger: #e74c3c;
-            --success: #2ecc71;
+            --gh-bg: #0d1117;        /* GitHub背景の紺色 */
+            --gh-canvas: #161b22;    /* パネルの紺色 */
+            --gh-border: #30363d;    /* 枠線 */
+            --gh-text: #c9d1d9;      /* メインテキスト */
+            --gh-btn: #21262d;       /* 通常ボタン */
+            --gh-btn-hover: #30363d;
+            --gh-primary: #238636;   /* 緑の保存ボタン */
+            --gh-blue: #1f6feb;      /* 青のアクセント */
+            --gh-danger: #da3633;    /* 削除の赤 */
         }
 
         body {
-            font-family: 'Helvetica Neue', Arial, sans-serif;
-            background-color: var(--bg);
-            color: var(--text);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+            background-color: var(--gh-bg);
+            color: var(--gh-text);
             margin: 0;
             padding: 20px;
+            line-height: 1.5;
         }
 
         .container {
@@ -36,123 +38,153 @@
             margin: 0 auto;
         }
 
-        h1 { font-size: 1.4rem; margin-bottom: 25px; font-weight: normal; border-bottom: 1px solid var(--border); padding-bottom: 10px;}
-
-        /* ボックス（セクション） */
-        .box {
-            background: var(--panel);
-            border: 1px solid var(--border);
-            padding: 20px;
-            border-radius: 6px;
-            margin-bottom: 20px;
+        header {
+            border-bottom: 1px solid var(--gh-border);
+            padding-bottom: 20px;
+            margin-bottom: 24px;
         }
 
-        label { display: block; font-size: 0.8rem; margin-bottom: 8px; color: #bbb; }
+        h1 { font-size: 20px; font-weight: 600; margin: 0; }
 
-        /* 入力欄：しっかり枠線と背景を付ける */
+        /* セクションボックス */
+        .box {
+            background-color: var(--gh-canvas);
+            border: 1px solid var(--gh-border);
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .box-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        /* 入力欄：GitHub風 */
         input[type="text"], input[type="password"] {
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            color: white;
-            padding: 10px;
-            border-radius: 4px;
+            background-color: var(--gh-bg);
+            border: 1px solid var(--gh-border);
+            color: var(--gh-text);
+            padding: 5px 12px;
+            font-size: 14px;
+            border-radius: 6px;
             width: 100%;
             box-sizing: border-box;
+            outline: none;
         }
 
-        /* エディタ：背景とコントラストをつける */
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: var(--gh-blue);
+            box-shadow: 0 0 0 3px rgba(31, 111, 235, 0.3);
+        }
+
+        /* エディタ */
         textarea {
-            background: #111;
-            border: 1px solid var(--border);
-            color: #dcdcdc;
+            background-color: var(--gh-bg);
+            border: 1px solid var(--gh-border);
+            color: #e6edf3;
             width: 100%;
             height: 400px;
-            padding: 15px;
+            padding: 16px;
             box-sizing: border-box;
-            font-family: 'Consolas', monospace;
-            line-height: 1.5;
-            margin-top: 10px;
-            border-radius: 4px;
+            font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, Liberation Mono, monospace;
+            font-size: 14px;
+            border-radius: 6px;
+            margin-top: 8px;
+            resize: vertical;
         }
 
-        /* ボタン：クリッカブルであることをはっきりさせる */
+        /* ボタン：GitHubスタイル */
         button {
-            background: #444;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 4px;
+            background-color: var(--gh-btn);
+            color: var(--gh-text);
+            border: 1px solid var(--gh-border);
+            padding: 5px 16px;
+            font-size: 14px;
+            font-weight: 500;
+            border-radius: 6px;
             cursor: pointer;
-            font-weight: bold;
             transition: 0.2s;
         }
 
-        button:hover { background: #555; }
+        button:hover { background-color: var(--gh-btn-hover); border-color: #8b949e; }
 
-        .btn-blue { background: var(--accent); }
-        .btn-blue:hover { background: #2980b9; }
+        .btn-primary { background-color: var(--gh-primary); color: white; border-color: rgba(240,246,252,0.1); }
+        .btn-primary:hover { background-color: #2ea043; }
 
-        /* ファイルリスト */
+        .btn-blue { background-color: var(--gh-blue); color: white; border-color: rgba(240,246,252,0.1); }
+        .btn-blue:hover { background-color: #388bfd; }
+
+        .btn-danger { color: #f85149; }
+        .btn-danger:hover { background-color: var(--gh-danger); color: white; }
+
+        /* ファイルリスト：横並び */
         #fileList {
             list-style: none;
             padding: 0;
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin: 15px 0;
+            margin: 0;
         }
 
         #fileList li {
-            background: var(--input-bg);
-            border: 1px solid var(--border);
-            padding: 6px 15px;
-            border-radius: 4px;
+            background-color: var(--gh-btn);
+            border: 1px solid var(--gh-border);
+            padding: 3px 12px;
+            border-radius: 20px;
+            font-size: 12px;
             cursor: pointer;
-            font-size: 0.85rem;
         }
 
-        #fileList li:hover { border-color: var(--accent); color: var(--accent); }
+        #fileList li:hover { border-color: #8b949e; }
 
-        .flex-row { display: flex; gap: 10px; }
-        .file-info { font-size: 0.8rem; color: #888; }
-        .nav-back { color: #888; text-decoration: none; font-size: 0.8rem; display: block; margin-bottom: 10px; }
+        .flex-row { display: flex; gap: 8px; }
+        .file-info { font-size: 12px; color: #8b949e; margin-bottom: 4px; }
+        .nav-back { color: #8b949e; text-decoration: none; font-size: 14px; margin-bottom: 16px; display: inline-block; }
+        .nav-back:hover { color: var(--gh-blue); }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <a href="#" onclick="history.back()" class="nav-back">← ポータルに戻る</a>
-    <h1>GitHub Manager</h1>
+    <a href="#" onclick="history.back()" class="nav-back">← Back to Portal</a>
+    
+    <header>
+        <h1>Repository Manager</h1>
+    </header>
 
     <div class="box">
-        <label>GitHub Access Token</label>
+        <label class="box-title">Authentication</label>
         <div class="flex-row">
-            <input type="password" id="ghToken" placeholder="ghp_...">
-            <button onclick="loadFileList()">接続</button>
+            <input type="password" id="ghToken" placeholder="GitHub Personal Access Token">
+            <button onclick="loadFileList()">Connect</button>
         </div>
     </div>
 
     <div class="box">
-        <label>新規ファイル作成</label>
+        <label class="box-title">Create New File</label>
         <div class="flex-row">
-            <input type="text" id="newFileName" placeholder="example.html">
-            <button onclick="createNewFile()" class="btn-blue">作成</button>
+            <input type="text" id="newFileName" placeholder="filename.html">
+            <button onclick="createNewFile()" class="btn-blue">Create</button>
         </div>
     </div>
 
     <div class="box">
-        <label>リポジトリ内のファイル</label>
+        <label class="box-title">Files</label>
         <ul id="fileList"></ul>
     </div>
 
-    <div class="box">
-        <div class="file-info">Path: <span id="currentPath" style="color:var(--accent)">なし</span></div>
-        <textarea id="editor" spellcheck="false" placeholder="ファイルを選択してください..."></textarea>
+    <div class="box" style="background-color: transparent; border: none; padding: 0;">
+        <div class="file-info">Editing: <span id="currentPath" style="color: var(--gh-text); font-family: monospace;">none</span></div>
+        <textarea id="editor" spellcheck="false" placeholder="Select a file to edit content..."></textarea>
         
         <input type="hidden" id="currentSha">
-        <div class="flex-row" style="margin-top: 15px;">
-            <button onclick="saveFileContent()" class="btn-blue" style="flex: 3; padding: 15px;">GitHubに上書き保存</button>
-            <button onclick="deleteFileContent()" style="background: var(--danger); flex: 1;">削除</button>
+        <div class="flex-row" style="margin-top: 16px;">
+            <button onclick="saveFileContent()" class="btn-primary" style="flex: 4; padding: 12px;">Commit changes</button>
+            <button onclick="deleteFileContent()" class="btn-danger" style="flex: 1;">Delete</button>
         </div>
     </div>
 </div>
