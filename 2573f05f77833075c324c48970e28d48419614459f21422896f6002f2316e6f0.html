@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal - 6 Sections</title>
+
+    <script>
+        if (sessionStorage.getItem('isLoggedIn') !== 'true') {
+            alert("ログインが必要です");
+            window.location.href = "index.html";
+        }
+
+        // ログアウト用関数
+        function logout() {
+            sessionStorage.removeItem('isLoggedIn');
+            window.location.href = "index.html";
+        }
+    </script>
+
+    <style>
+        /* スタイルは以前のままでOK */
+        :root {
+            --primary-color: #2f3640;
+            --accent-color: #0097e6;
+            --bg-color: #f5f6fa;
+            --text-color: #2f3640;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            line-height: 1.6;
+        }
+
+        nav {
+            background: var(--primary-color);
+            padding: 1rem 2rem;
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: color 0.3s;
+            cursor: pointer;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-color);
+        }
+
+        header {
+            text-align: center;
+            padding: 4rem 1rem;
+            background: linear-gradient(135deg, #2f3640, #191d22);
+            color: white;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: -50px auto 50px;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+            text-align: center;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+        }
+
+        .card h2 {
+            color: var(--accent-color);
+            margin-top: 0;
+        }
+
+        .btn {
+            display: inline-block;
+            background: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            margin-top: 15px;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+        }
+    </style>
+</head>
+<body>
+
+    <nav>
+        <strong>My Project</strong>
+        <div class="nav-links">
+            <a href="main.html">Home</a>
+            <a href="manager.html">Manager</a>
+            <a href="portfolio.html">Portfolio</a>
+            <a href="blog.html">Blog</a>
+            <a href="download.html">Download</a>
+            <a onclick="logout()" style="color: #ff7675;">Logout</a>
+        </div>
+    </nav>
+
+    <header>
+        <h1>Member Portal</h1>
+        <p>すべてのコンテンツにアクセス可能です</p>
+    </header>
+
+    <main class="container">
+        <div class="card">
+            <h2>GitHub Manager</h2>
+            <p>ファイルの表示・編集・保存</p>
+            <a href="manager.html" class="btn">開く</a>
+        </div>
+
+        <div class="card">
+            <h2>Portfolio</h2>
+            <p>これまでの制作物の一覧</p>
+            <a href="portfolio.html" class="btn">作品を見る</a>
+        </div>
+
+        <div class="card">
+            <h2>Blog</h2>
+            <p>日々の活動や技術メモを掲載</p>
+            <a href="blog.html" class="btn">読む</a>
+        </div>
+
+        <div class="card">
+            <h2>Download</h2>
+            <p>便利なツールや資料の配布場所</p>
+            <a href="download.html" class="btn">保存する</a>
+        </div>
+
+        <div class="card">
+            <h2>Gallery</h2>
+            <p>制作した画像や写真を公開</p>
+            <a href="gallery.html" class="btn">開く</a>
+        </div>
+
+        <div class="card">
+            <h2>Contact</h2>
+            <p>お問い合わせ・メッセージはこちら。</p>
+            <a href="contact.html" class="btn">連絡する</a>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 My GitHub Pages. Securely Hosted.</p>
+    </footer>
+
+</body>
+</html>
