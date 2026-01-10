@@ -125,9 +125,50 @@
         } catch (e) { alert("通信エラーが発生しました"); }
     }
 
+    // --- 【新規追加】ファイルを削除する関数 ---
+    async function deleteFileContent() {
+        const token = document.getElementById('ghToken').value;
+        const path = document.getElementById('currentPath').innerText;
+        const sha = document.getElementById('currentSha').value;
+
+        if (path === "なし") return alert("削除するファイルを選択してください");
+        if (!confirm(`ファイル「${path}」を完全に削除してもよろしいですか？`)) return;
+
+        const url = `https://api.github.com/repos/${CONFIG.username}/${CONFIG.repo}/contents/${path}`;
+
+        const body = {
+            message: `Delete ${path} via Web Manager`,
+            sha: sha // 削除にもSHAが必須です
+        };
+
+        try {
+            const response = await fetch(url, {
+                method: "DELETE", // 削除はDELETEメソッド
+                headers: {
+                    "Authorization": `token ${token}`,
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(body)
+            });
+
+            if (response.ok) {
+                alert("削除完了しました");
+                // 画面をリセット
+                document.getElementById('editor').value = "";
+                document.getElementById('currentPath').innerText = "なし";
+                document.getElementById('currentSha').value = "";
+                loadFileList(); // リストを再読み込み
+            } else {
+                const err = await response.json();
+                alert("削除失敗: " + err.message);
+            }
+        } catch (e) { alert("通信エラーが発生しました"); }
+    }
+
     // 公開リストに追記
     window.loadFileList = loadFileList;
     window.saveFileContent = saveFileContent;
     window.createNewFile = createNewFile;
+    window.deleteFileContent = deleteFileContent; // これを追加
     
 })();
