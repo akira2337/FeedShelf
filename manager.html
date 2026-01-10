@@ -13,179 +13,147 @@
 
     <style>
         :root {
-            --bg: #121212;
-            --surface: #1e1e1e;
-            --border: #333333;
+            --bg: #1a1a1a;
+            --panel: #242424;
+            --input-bg: #2d2d2d;
+            --border: #3d3d3d;
             --text: #e0e0e0;
-            --text-dim: #999;
-            --accent: #bb86fc; /* シックなパープル */
-            --danger: #cf6679;
-            --success: #03dac6;
+            --accent: #3498db;
+            --danger: #e74c3c;
+            --success: #2ecc71;
         }
 
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
+            padding: 20px;
         }
 
         .container {
-            width: 100%;
-            max-width: 1000px;
-            padding: 40px 20px;
+            max-width: 900px;
+            margin: 0 auto;
         }
 
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 40px;
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 20px;
-        }
+        h1 { font-size: 1.4rem; margin-bottom: 25px; font-weight: normal; border-bottom: 1px solid var(--border); padding-bottom: 10px;}
 
-        h1 { font-size: 1.2rem; font-weight: 300; letter-spacing: 2px; margin: 0; }
-
-        .config-panel {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 30px;
-        }
-
-        .input-group {
-            background: var(--surface);
-            padding: 15px;
-            border-radius: 4px;
+        /* ボックス（セクション） */
+        .box {
+            background: var(--panel);
             border: 1px solid var(--border);
+            padding: 20px;
+            border-radius: 6px;
+            margin-bottom: 20px;
         }
 
-        label { display: block; font-size: 0.7rem; color: var(--text-dim); margin-bottom: 8px; text-transform: uppercase; }
+        label { display: block; font-size: 0.8rem; margin-bottom: 8px; color: #bbb; }
 
-        input, textarea {
-            background: transparent;
-            border: none;
-            color: var(--text);
+        /* 入力欄：しっかり枠線と背景を付ける */
+        input[type="text"], input[type="password"] {
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: white;
+            padding: 10px;
+            border-radius: 4px;
             width: 100%;
-            font-size: 0.9rem;
-            outline: none;
+            box-sizing: border-box;
         }
 
-        /* ファイルリスト：横並びのスリムなチップ表示 */
+        /* エディタ：背景とコントラストをつける */
+        textarea {
+            background: #111;
+            border: 1px solid var(--border);
+            color: #dcdcdc;
+            width: 100%;
+            height: 400px;
+            padding: 15px;
+            box-sizing: border-box;
+            font-family: 'Consolas', monospace;
+            line-height: 1.5;
+            margin-top: 10px;
+            border-radius: 4px;
+        }
+
+        /* ボタン：クリッカブルであることをはっきりさせる */
+        button {
+            background: #444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        button:hover { background: #555; }
+
+        .btn-blue { background: var(--accent); }
+        .btn-blue:hover { background: #2980b9; }
+
+        /* ファイルリスト */
         #fileList {
             list-style: none;
             padding: 0;
             display: flex;
             flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 30px;
+            margin: 15px 0;
         }
 
         #fileList li {
-            font-size: 0.75rem;
-            padding: 5px 12px;
+            background: var(--input-bg);
             border: 1px solid var(--border);
-            border-radius: 2px;
+            padding: 6px 15px;
+            border-radius: 4px;
             cursor: pointer;
-            transition: 0.3s;
-            color: var(--text-dim);
+            font-size: 0.85rem;
         }
 
         #fileList li:hover { border-color: var(--accent); color: var(--accent); }
 
-        /* エディタエリア */
-        .editor-container {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .editor-header {
-            padding: 10px 15px;
-            background: rgba(255,255,255,0.03);
-            border-bottom: 1px solid var(--border);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        textarea {
-            height: 500px;
-            padding: 20px;
-            font-family: 'Fira Code', 'Consolas', monospace;
-            line-height: 1.6;
-            resize: none;
-        }
-
-        /* ボタン類：シンプルに */
-        button {
-            background: transparent;
-            color: var(--text);
-            border: 1px solid var(--border);
-            padding: 8px 16px;
-            cursor: pointer;
-            font-size: 0.8rem;
-            transition: 0.3s;
-        }
-
-        button:hover { background: var(--text); color: var(--bg); }
-
-        .btn-main { border-color: var(--accent); color: var(--accent); }
-        .btn-main:hover { background: var(--accent); color: var(--bg); }
-
-        .action-bar {
-            display: flex;
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .nav-back { color: var(--text-dim); text-decoration: none; font-size: 0.8rem; }
-        .nav-back:hover { color: var(--text); }
+        .flex-row { display: flex; gap: 10px; }
+        .file-info { font-size: 0.8rem; color: #888; }
+        .nav-back { color: #888; text-decoration: none; font-size: 0.8rem; display: block; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <header>
-        <h1>CORE MANAGER</h1>
-        <a href="#" onclick="history.back()" class="nav-back">EXIT</a>
-    </header>
+    <a href="#" onclick="history.back()" class="nav-back">← ポータルに戻る</a>
+    <h1>GitHub Manager</h1>
 
-    <div class="config-panel">
-        <div class="input-group">
-            <label>Authentication</label>
-            <div style="display: flex;">
-                <input type="password" id="ghToken" placeholder="Enter Token">
-                <button onclick="loadFileList()">SYNC</button>
-            </div>
-        </div>
-        <div class="input-group">
-            <label>New Entry</label>
-            <div style="display: flex;">
-                <input type="text" id="newFileName" placeholder="filename.html">
-                <button onclick="createNewFile()" class="btn-main">CREATE</button>
-            </div>
+    <div class="box">
+        <label>GitHub Access Token</label>
+        <div class="flex-row">
+            <input type="password" id="ghToken" placeholder="ghp_...">
+            <button onclick="loadFileList()">接続</button>
         </div>
     </div>
 
-    <ul id="fileList"></ul>
-
-    <div class="editor-container">
-        <div class="editor-header">
-            <span class="file-info" style="font-size: 0.8rem;">Path: <span id="currentPath" style="color: var(--accent);">none</span></span>
+    <div class="box">
+        <label>新規ファイル作成</label>
+        <div class="flex-row">
+            <input type="text" id="newFileName" placeholder="example.html">
+            <button onclick="createNewFile()" class="btn-blue">作成</button>
         </div>
-        <textarea id="editor" spellcheck="false" placeholder="// Select a file to begin..."></textarea>
     </div>
 
-    <div class="action-bar">
+    <div class="box">
+        <label>リポジトリ内のファイル</label>
+        <ul id="fileList"></ul>
+    </div>
+
+    <div class="box">
+        <div class="file-info">Path: <span id="currentPath" style="color:var(--accent)">なし</span></div>
+        <textarea id="editor" spellcheck="false" placeholder="ファイルを選択してください..."></textarea>
+        
         <input type="hidden" id="currentSha">
-        <button onclick="saveFileContent()" class="btn-main" style="flex-grow: 1;">COMMIT CHANGES</button>
-        <button onclick="deleteFileContent()" style="color: var(--danger); border-color: var(--danger);">DELETE</button>
+        <div class="flex-row" style="margin-top: 15px;">
+            <button onclick="saveFileContent()" class="btn-blue" style="flex: 3; padding: 15px;">GitHubに上書き保存</button>
+            <button onclick="deleteFileContent()" style="background: var(--danger); flex: 1;">削除</button>
+        </div>
     </div>
 </div>
 
