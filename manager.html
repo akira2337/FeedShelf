@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GitHub Manager - Full Features</title>
+    <title>GitHub Manager - Pro</title>
 
     <script>
         if (sessionStorage.getItem('isLoggedIn') !== 'true') {
@@ -18,6 +18,7 @@
             --accent-color: #0097e6;
             --bg-color: #f5f6fa;
             --success-color: #27ae60;
+            --danger-color: #e74c3c;
             --create-color: #686de0;
         }
 
@@ -42,7 +43,6 @@
 
         .section-box { margin-bottom: 20px; padding: 15px; border-radius: 8px; }
         
-        /* 入力エリア共通 */
         input[type="text"], input[type="password"], textarea {
             width: 100%;
             padding: 10px;
@@ -63,14 +63,10 @@
 
         button:hover { opacity: 0.8; }
 
-        /* 設定エリア */
         .token-group { background: #eee; }
-        
-        /* 新規作成エリア */
         .create-group { background: #dff9fb; }
         .flex-row { display: flex; gap: 10px; margin-top: 5px; }
 
-        /* ファイルリスト */
         #fileList {
             list-style: none;
             padding: 0;
@@ -87,23 +83,32 @@
             border-radius: 20px;
             cursor: pointer;
             font-size: 0.85rem;
-            border: 1px solid var(--accent-color); /* ここを修正 */
+            border: 1px solid var(--accent-color);
             transition: 0.2s;
         }
 
         #fileList li:hover { background: var(--accent-color); color: white; }
 
-        /* エディタ */
         textarea {
             height: 450px;
             font-family: 'Consolas', 'Monaco', monospace;
             background: #2d3436;
             color: #dfe6e9;
             margin-top: 10px;
+            resize: vertical;
         }
 
         .file-info { font-size: 0.85rem; color: #636e72; font-weight: bold; }
         .nav-back { text-decoration: none; color: var(--accent-color); font-size: 0.9rem; margin-bottom: 15px; display: inline-block; }
+
+        /* 保存と削除のボタンエリア */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        .btn-save { background: var(--success-color); flex: 3; padding: 15px; font-size: 1.1rem; }
+        .btn-delete { background: var(--danger-color); flex: 1; padding: 15px; font-size: 1.1rem; }
     </style>
 </head>
 <body>
@@ -111,7 +116,7 @@
 <div class="container">
     <a href="#" onclick="history.back()" class="nav-back">← ポータルに戻る</a>
     
-    <h1>GitHub Content Manager</h1>
+    <h1>GitHub Manager</h1>
 
     <div class="section-box token-group">
         <label style="font-size: 0.8rem;">GitHub Access Token (PAT):</label>
@@ -124,23 +129,24 @@
     <div class="section-box create-group">
         <label style="font-size: 0.8rem; font-weight: bold;">新規ファイル作成:</label>
         <div class="flex-row">
-            <input type="text" id="newFileName" placeholder="example.html" style="margin:0;">
-            <button onclick="createNewFile()" style="background: var(--create-color); margin:0;">作成</button>
+            <input type="text" id="newFileName" placeholder="example.html">
+            <button onclick="createNewFile()" style="background: var(--create-color);">作成</button>
         </div>
     </div>
 
     <h3>Repository Files</h3>
-    <ul id="fileList">
-        </ul>
+    <ul id="fileList"></ul>
 
     <div style="margin-top: 30px;">
         <div class="file-info">編集中のファイル: <span id="currentPath" style="color: var(--accent-color);">なし</span></div>
         <textarea id="editor" spellcheck="false" placeholder="ファイルを選択してください..."></textarea>
         
         <input type="hidden" id="currentSha">
-        <button onclick="saveFileContent()" style="background: var(--success-color); width: 100%; margin-top: 15px; font-size: 1.1rem; padding: 15px;">
-            GitHubに上書き保存（コミット）
-        </button>
+        
+        <div class="action-buttons">
+            <button class="btn-save" onclick="saveFileContent()">GitHubに上書き保存</button>
+            <button class="btn-delete" onclick="deleteFileContent()">削除</button>
+        </div>
     </div>
 </div>
 
