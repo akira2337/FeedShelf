@@ -3,65 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - My Project</title>
+    <title>Portal Login</title>
     <style>
-        body {
-            font-family: sans-serif;
-            background-color: #2f3640;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .login-box {
-            background: white;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-            text-align: center;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-        button {
-            background: #0097e6;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 100%;
-        }
+        body { font-family: sans-serif; background: #2f3640; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; color: white; }
+        .box { background: rgba(255,255,255,0.1); padding: 30px; border-radius: 15px; backdrop-filter: blur(10px); text-align: center; border: 1px solid rgba(255,255,255,0.2); }
+        input { padding: 12px; border-radius: 5px; border: none; width: 200px; margin-bottom: 10px; }
+        button { padding: 12px 25px; border-radius: 5px; border: none; background: #0097e6; color: white; cursor: pointer; font-weight: bold; }
         button:hover { background: #00a8ff; }
-        #message { color: red; margin-top: 10px; font-size: 0.8rem; }
+        #error { color: #ff7675; font-size: 0.8rem; height: 20px; }
     </style>
 </head>
 <body>
 
-    <div class="login-box">
-        <h2>Members Only</h2>
-        <p>パスワードを入力してください</p>
-        <input type="password" id="password" placeholder="Password">
-        <button onclick="checkPassword()">Login</button>
-        <p id="message"></p>
+    <div class="box">
+        <h2>Enter Access Key</h2>
+        <input type="password" id="passInput" placeholder="キーワードを入力">
+        <br>
+        <button onclick="entry()">Enter</button>
+        <p id="error"></p>
     </div>
 
     <script>
-        function checkPassword() {
-            const pass = document.getElementById('password').value;
-            // パスワードを「1234」に設定する場合
-            if (pass === "1234") {
-                // 正解なら総合ページ（main.html）へ移動
-                window.location.href = "main.html";
-            } else {
-                document.getElementById('message').innerText = "パスワードが違います";
-            }
+        async function entry() {
+            const val = document.getElementById('passInput').value;
+            if(!val) return;
+
+            // 入力文字をSHA-256でハッシュ化する関数
+            const msgUint8 = new TextEncoder().encode(val);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+            // ハッシュ化した値と同じ名前のHTMLファイルへ飛ばす
+            // 例: パスワードが「apple」なら「3a7bd...html」へ移動を試みる
+            window.location.href = hashHex + ".html";
+            
+            // 存在しない場合（間違っている場合）はGitHubの404ページへ飛びますが、
+            // 少し待ってエラー表示を出すことも可能です。
+            setTimeout(() => {
+                document.getElementById('error').innerText = "アクセス権限がありません";
+            }, 1000);
         }
     </script>
 </body>
