@@ -19,31 +19,10 @@
         <h2>Enter Access Key</h2>
         <input type="password" id="passInput" placeholder="キーワードを入力">
         <br>
-        <button onclick="entry()">Enter</button>
+        <button onclick="launch()">Enter</button>
         <p id="error"></p>
     </div>
 
-    <script>
-        async function entry() {
-            const val = document.getElementById('passInput').value;
-            if(!val) return;
-
-            // 入力文字をSHA-256でハッシュ化する関数
-            const msgUint8 = new TextEncoder().encode(val);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-            // ハッシュ化した値と同じ名前のHTMLファイルへ飛ばす
-            // 例: パスワードが「apple」なら「3a7bd...html」へ移動を試みる
-            window.location.href = hashHex + ".html";
-            
-            // 存在しない場合（間違っている場合）はGitHubの404ページへ飛びますが、
-            // 少し待ってエラー表示を出すことも可能です。
-            setTimeout(() => {
-                document.getElementById('error').innerText = "アクセス権限がありません";
-            }, 1000);
-        }
-    </script>
+    <script src="pwscript.js"></script>
 </body>
 </html>
