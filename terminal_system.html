@@ -2,206 +2,224 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Integrated Cyber Command Terminal</title>
+    <title>ROOT@CYBER-OPS:~#</title>
     <style>
         :root {
-            --gh-bg: #0d1117;
-            --gh-canvas: #161b22;
-            --gh-border: #30363d;
-            --neon-green: #00ff41;
-            --neon-blue: #58a6ff;
-            --neon-red: #f85149;
+            --bg: #050505;
+            --panel: #0c0c0c;
+            --border: #1a1a1a;
+            --text-main: #00ff41; /* マトリックス・グリーン */
+            --text-dim: #003b00;
+            --accent: #58a6ff;
+            --danger: #ff0000;
+            --warning: #ffae00;
         }
 
         body {
-            background: #010409;
-            color: var(--neon-green);
-            font-family: 'Consolas', 'Monaco', monospace;
-            margin: 0;
-            padding: 10px;
-            height: 98vh;
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
+            background: var(--bg);
+            color: var(--text-main);
+            font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
+            margin: 0; padding: 5px; height: 100vh; display: flex; flex-direction: column;
+            font-size: 13px;
         }
 
-        /* 上部ヘッダー */
-        header {
-            display: flex;
-            justify-content: space-between;
-            border: 1px solid var(--gh-border);
-            padding: 10px 20px;
-            background: var(--gh-canvas);
-            margin-bottom: 10px;
+        /* 画面上部のステータスバー */
+        .top-bar {
+            background: var(--panel); border: 1px solid var(--border);
+            padding: 5px 15px; display: flex; justify-content: space-between;
+            font-size: 11px; margin-bottom: 5px; color: var(--accent);
         }
 
-        /* メインレイアウト */
-        .main-layout {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            grid-template-rows: 1fr 200px;
-            gap: 10px;
-            flex-grow: 1;
+        .layout {
+            display: grid; grid-template-columns: 320px 1fr; grid-template-rows: 1fr 220px;
+            gap: 5px; flex-grow: 1;
         }
 
         .panel {
-            background: var(--gh-canvas);
-            border: 1px solid var(--gh-border);
-            padding: 15px;
-            overflow-y: auto;
-            position: relative;
+            background: var(--panel); border: 1px solid var(--border);
+            padding: 12px; position: relative; overflow: hidden;
         }
 
-        /* ターゲットプロファイル (左) */
-        .profile-panel { grid-row: span 1; }
-        
-        /* 攻撃モジュール (右) */
-        .module-panel { display: flex; flex-direction: column; }
-        .tabs { display: flex; gap: 5px; margin-bottom: 10px; }
+        h2 { font-size: 11px; color: var(--warning); margin: 0 0 10px 0; border-left: 3px solid var(--warning); padding-left: 8px; text-transform: uppercase; }
+
+        /* 左パネル：OSINT & RECON */
+        .recon-box input {
+            width: 100%; background: #000; border: 1px solid var(--border);
+            color: var(--text-main); padding: 8px; box-sizing: border-box; outline: none; margin-bottom: 10px;
+        }
+
+        /* 中央パネル：攻撃モジュール */
+        .tab-nav { display: flex; gap: 2px; margin-bottom: 10px; }
         .tab-btn {
-            background: #21262d; border: 1px solid var(--gh-border);
-            color: var(--neon-green); padding: 5px 15px; cursor: pointer;
+            background: #111; border: 1px solid var(--border); color: var(--text-main);
+            padding: 5px 12px; cursor: pointer; font-size: 11px;
         }
-        .tab-btn.active { background: var(--gh-border); border-bottom: 2px solid var(--neon-blue); }
+        .tab-btn.active { background: var(--border); color: #fff; border-bottom: 2px solid var(--accent); }
 
-        /* コンソール (下) */
-        .console-panel { grid-column: span 2; background: #000; }
-
-        /* 各種入力・出力 */
-        input, textarea {
-            width: 90%; background: #000; border: 1px solid var(--gh-border);
-            color: var(--neon-green); padding: 8px; margin-bottom: 10px; outline: none;
+        /* ターミナル風ログ */
+        .terminal-log {
+            background: #000; height: 100%; overflow-y: auto; padding: 10px;
+            font-size: 12px; line-height: 1.2;
         }
-        button.action-btn {
-            width: 100%; padding: 10px; background: transparent;
-            border: 1px solid var(--neon-green); color: var(--neon-green);
-            cursor: pointer; font-weight: bold; margin-bottom: 10px;
-        }
-        button.action-btn:hover { background: rgba(0, 255, 65, 0.1); }
+        .cmd-line { color: #fff; font-weight: bold; }
+        .cmd-line::before { content: "root@kali:~# "; color: var(--accent); }
 
-        pre { font-size: 11px; white-space: pre-wrap; word-break: break-all; }
-        .log-entry { font-size: 12px; margin-bottom: 2px; }
-        .log-time { color: #8b949e; margin-right: 10px; }
+        /* プログレスバー */
+        .p-bar-bg { width: 100%; background: #111; height: 4px; margin: 8px 0; }
+        .p-bar-fill { height: 100%; background: var(--text-main); width: 0%; transition: width 0.3s; }
+
+        button.exec-btn {
+            width: 100%; background: transparent; border: 1px solid var(--text-main);
+            color: var(--text-main); padding: 8px; cursor: pointer; font-family: inherit; font-weight: bold;
+        }
+        button.exec-btn:hover { background: var(--text-main); color: #000; }
 
         .hidden { display: none; }
     </style>
 </head>
 <body>
 
-<header>
-    <div>STATUS: <span id="sys-status">OPERATIONAL</span></div>
-    <div style="color: var(--neon-blue);">CYBER COMMAND SYSTEM v4.0</div>
-    <div>USER: akira2337</div>
-</header>
+<div class="top-bar">
+    <div>SESSION: ACTIVE [PID: 4821]</div>
+    <div>IP: 192.168.x.x (VPN_TUNNEL_ESTABLISHED)</div>
+    <div id="clock">00:00:00</div>
+</div>
 
-<div class="main-layout">
-    <div class="panel profile-panel">
-        <h3 style="font-size: 12px; color: var(--neon-blue);">TARGET PROFILE</h3>
-        <input type="text" id="target-input" placeholder="example.com / IP">
-        <button class="action-btn" onclick="identifyTarget()">IDENTIFY</button>
-        <div id="target-details">
-            <pre id="geo-data">Waiting for input...</pre>
+<div class="layout">
+    <div class="panel recon-box">
+        <h2>01. RECONNAISSANCE</h2>
+        <p style="font-size: 10px; color: #555;">Target Selection & IP Discovery</p>
+        <input type="text" id="target-url" placeholder="Enter Domain (e.g. target.com)">
+        <button class="exec-btn" onclick="startRecon()">EXECUTE NSLOOKUP</button>
+        <div id="recon-output" style="margin-top:15px; font-size: 11px; line-height: 1.5;">
+            [SYSTEM] Awaiting Target...
         </div>
     </div>
 
-    <div class="panel module-panel">
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('recon')">OSINT</button>
-            <button class="tab-btn" onclick="switchTab('scan')">VULN_SCAN</button>
-            <button class="tab-btn" onclick="switchTab('wifi')">WIFI_EXPLOIT</button>
+    <div class="panel">
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="switchMod('scanner')">PORT_SCAN</button>
+            <button class="tab-btn" onclick="switchMod('brute')">BRUTE_FORCE</button>
+            <button class="tab-btn" onclick="switchMod('wifi')">802.11_MONITOR</button>
         </div>
 
-        <div id="recon-tab" class="tab-content">
-            <p>DNS Intelligence & MX Records</p>
-            <button class="action-btn" onclick="runDNS()">RUN DNS LOOKUP</button>
-            <div id="dns-results"><pre>No data.</pre></div>
+        <div id="mod-scanner">
+            <h2>NMAP SERVICE DETECTION</h2>
+            <button class="exec-btn" onclick="runNmap()">RUN STEALTH SCAN (SYN)</button>
+            <div id="scan-view" style="margin-top:10px;"></div>
         </div>
 
-        <div id="scan-tab" class="tab-content hidden">
-            <p>Vulnerability Detection Service</p>
-            <button class="action-btn" style="border-color: var(--neon-red); color: var(--neon-red);" onclick="runScan()">START SCANNER</button>
-            <div id="scan-results"><pre>Ready for scanning.</pre></div>
+        <div id="mod-brute" class="hidden">
+            <h2>DICTIONARY ATTACK (WPA2/SSH)</h2>
+            <p style="font-size: 10px;">Hash Type: NetNTLMv2 / Wordlist: rockyou.txt</p>
+            <button class="exec-btn" onclick="runBrute()">START CRACKING</button>
+            <div id="brute-view" style="margin-top:10px;">
+                <div class="p-bar-bg"><div id="brute-fill" class="p-bar-fill"></div></div>
+                <div id="brute-stat">Progress: 0.0%</div>
+            </div>
         </div>
 
-        <div id="wifi-tab" class="tab-content hidden">
-            <p>Wireless Interface Simulation</p>
-            <button class="action-btn" onclick="runWifi()">AIRMON-NG START</button>
-            <div id="wifi-results"><pre>Monitor mode: OFF</pre></div>
+        <div id="mod-wifi" class="hidden">
+            <h2>AIRMON-NG INTERFACE</h2>
+            <button class="exec-btn" onclick="runWifi()">MONITOR MODE: START</button>
+            <div id="wifi-view"></div>
         </div>
     </div>
 
-    <div class="panel console-panel" id="main-log">
-        <div class="log-entry"><span class="log-time">[00:00:00]</span> Initializing system cores... Done.</div>
+    <div class="panel" style="grid-column: span 2; padding: 0;">
+        <div class="terminal-log" id="term-log">
+            <div><span style="color:var(--warning)">[!] SYSTEM INITIALIZED. WELCOME TO OPERATIONAL TERMINAL.</span></div>
+        </div>
     </div>
 </div>
 
 <script>
-    function log(msg, color = "") {
-        const consoleEl = document.getElementById('main-log');
-        const entry = document.createElement('div');
-        entry.className = 'log-entry';
-        if(color) entry.style.color = color;
-        const time = new Date().toLocaleTimeString();
-        entry.innerHTML = `<span class="log-time">[${time}]</span> ${msg}`;
-        consoleEl.prepend(entry);
+    function updateClock() {
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString();
+    }
+    setInterval(updateClock, 1000);
+
+    function log(msg, type = 'info') {
+        const log = document.getElementById('term-log');
+        const div = document.createElement('div');
+        const colors = { info: 'var(--text-main)', warn: 'var(--warning)', err: 'var(--danger)', cmd: '#fff' };
+        
+        if (type === 'cmd') {
+            div.className = 'cmd-line';
+        } else {
+            div.style.color = colors[type];
+            div.innerText = `[${new Date().toLocaleTimeString()}] [${type.toUpperCase()}] ${msg}`;
+        }
+        if(type === 'cmd') div.innerText = msg;
+
+        log.prepend(div);
     }
 
-    function switchTab(tabName) {
-        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+    function switchMod(mod) {
+        ['scanner', 'brute', 'wifi'].forEach(m => document.getElementById('mod-'+m).classList.add('hidden'));
         document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById(tabName + '-tab').classList.remove('hidden');
+        document.getElementById('mod-'+mod).classList.remove('hidden');
         event.currentTarget.classList.add('active');
-        log(`Switched to module: ${tabName.toUpperCase()}`);
+        log(`Loading module: ${mod}.so`, 'info');
     }
 
-    // --- OSINT / IDENTIFY ---
-    async function identifyTarget() {
-        const target = document.getElementById('target-input').value;
+    async function startRecon() {
+        const target = document.getElementById('target-url').value;
         if(!target) return;
-        log(`Identification request: ${target}`);
+        log(`nslookup ${target}`, 'cmd');
+        log("Querying DNS root servers...");
+        
         try {
             const res = await fetch(`http://ip-api.com/json/${target}`);
-            const data = await res.json();
-            document.getElementById('geo-data').innerText = JSON.stringify(data, null, 2);
-            log(`Geo-data retrieved for ${target}`, "var(--neon-blue)");
-        } catch(e) { log("Identification failed.", "var(--neon-red)"); }
+            const d = await res.json();
+            document.getElementById('recon-output').innerHTML = `
+                <span style="color:var(--accent)">ADDRESS IDENTIFIED</span><br>
+                IP: ${d.query}<br>ASN: ${d.as}<br>LOC: ${d.city}, ${d.country}<br>
+                ISP: ${d.isp}
+            `;
+            log("Host discovery complete. Vector map updated.");
+        } catch(e) { log("Target resolution failed.", "err"); }
     }
 
-    // --- DNS ---
-    async function runDNS() {
-        const target = document.getElementById('target-input').value;
-        log(`Querrying DNS MX records for ${target}...`);
-        try {
-            const res = await fetch(`https://dns.google/resolve?name=${target}&type=MX`);
-            const data = await res.json();
-            document.getElementById('dns-results').innerHTML = `<pre>${JSON.stringify(data.Answer, null, 2)}</pre>`;
-            log("DNS lookup complete.");
-        } catch(e) { log("DNS Query Error.", "var(--neon-red)"); }
+    async function runNmap() {
+        log(`nmap -sS -Pn -A ${document.getElementById('target-url').value || 'Target'}`, 'cmd');
+        const ports = [21, 22, 80, 443, 3306, 8080];
+        const view = document.getElementById('scan-view');
+        view.innerHTML = "";
+        
+        for(let p of ports) {
+            await new Promise(r => setTimeout(r, 600));
+            log(`TCP SYN stealth scan: Port ${p}/tcp is OPEN`);
+            view.innerHTML += `<div style="font-size:11px;">PORT ${p}: OPEN (Service: ${p==443?'SSL':p==80?'HTTP':'Service-Found'})</div>`;
+        }
+        log("Nmap done: 1 IP address (1 host up) scanned.", "warn");
     }
 
-    // --- SCAN ---
-    function runScan() {
-        log("Scanner initiated. Checking common vulnerabilities...", "var(--neon-red)");
-        let steps = ["Checking SQLi...", "Checking XSS...", "Checking Directory Traversal..."];
-        let i = 0;
-        let timer = setInterval(() => {
-            log(steps[i]);
-            i++;
-            if(i >= steps.length) {
-                clearInterval(timer);
-                document.getElementById('scan-results').innerHTML = "<pre>[!] Vulnerability Found: CVE-2023-XXXX\n[!] Missing Security Headers</pre>";
-                log("Scan completed. Critical alerts raised.", "var(--neon-red)");
+    async function runBrute() {
+        log("hcxtools: Captured PMKID handshake. Starting hashcat...", "warn");
+        const fill = document.getElementById('brute-fill');
+        const stat = document.getElementById('brute-stat');
+        
+        for(let i=0; i<=100; i+=2) {
+            await new Promise(r => setTimeout(r, 100));
+            fill.style.width = i + "%";
+            stat.innerText = `Testing: rockyou.txt (${i}.0%) - ETA: 00:02`;
+            if(i % 20 === 0) log(`Current keyspace: ${i*12800}/sec...`);
+            if(i === 100) {
+                log("CRACKING SUCCESSFUL: Passphrase 'admin2023' matched.", "info");
+                alert("MATCH FOUND: admin2023");
             }
-        }, 800);
+        }
     }
 
-    // --- WIFI ---
     function runWifi() {
-        log("Switching wireless card to monitor mode...");
+        log("airmon-ng start wlan0", "cmd");
         setTimeout(() => {
-            log("Searching for BSSIDs in range...");
-            document.getElementById('wifi-results').innerHTML = "<pre>CH 6  [WPA2] Home_Wifi_01 (RSSI -45)\nCH 11 [WPA3] Coffee_Shop (RSSI -72)</pre>";
-            log("WLAN monitoring active.");
+            log("Monitor mode enabled on wlan0mon", "info");
+            document.getElementById('wifi-view').innerHTML = `<pre style="font-size:10px; color:#555;">
+BSSID              PWR  BEACONS  #DATA
+00:11:22:AA:BB:CC  -42       82     14
+AA:CC:DD:11:22:33  -78       12      0</pre>`;
         }, 1000);
     }
 </script>
