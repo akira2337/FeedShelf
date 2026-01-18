@@ -2,227 +2,72 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>ROOT@CYBER-OPS:~#</title>
-    <style>
-        :root {
-            --bg: #050505;
-            --panel: #0c0c0c;
-            --border: #1a1a1a;
-            --text-main: #00ff41; /* マトリックス・グリーン */
-            --text-dim: #003b00;
-            --accent: #58a6ff;
-            --danger: #ff0000;
-            --warning: #ffae00;
-        }
-
-        body {
-            background: var(--bg);
-            color: var(--text-main);
-            font-family: 'Fira Code', 'Cascadia Code', 'Consolas', monospace;
-            margin: 0; padding: 5px; height: 100vh; display: flex; flex-direction: column;
-            font-size: 13px;
-        }
-
-        /* 画面上部のステータスバー */
-        .top-bar {
-            background: var(--panel); border: 1px solid var(--border);
-            padding: 5px 15px; display: flex; justify-content: space-between;
-            font-size: 11px; margin-bottom: 5px; color: var(--accent);
-        }
-
-        .layout {
-            display: grid; grid-template-columns: 320px 1fr; grid-template-rows: 1fr 220px;
-            gap: 5px; flex-grow: 1;
-        }
-
-        .panel {
-            background: var(--panel); border: 1px solid var(--border);
-            padding: 12px; position: relative; overflow: hidden;
-        }
-
-        h2 { font-size: 11px; color: var(--warning); margin: 0 0 10px 0; border-left: 3px solid var(--warning); padding-left: 8px; text-transform: uppercase; }
-
-        /* 左パネル：OSINT & RECON */
-        .recon-box input {
-            width: 100%; background: #000; border: 1px solid var(--border);
-            color: var(--text-main); padding: 8px; box-sizing: border-box; outline: none; margin-bottom: 10px;
-        }
-
-        /* 中央パネル：攻撃モジュール */
-        .tab-nav { display: flex; gap: 2px; margin-bottom: 10px; }
-        .tab-btn {
-            background: #111; border: 1px solid var(--border); color: var(--text-main);
-            padding: 5px 12px; cursor: pointer; font-size: 11px;
-        }
-        .tab-btn.active { background: var(--border); color: #fff; border-bottom: 2px solid var(--accent); }
-
-        /* ターミナル風ログ */
-        .terminal-log {
-            background: #000; height: 100%; overflow-y: auto; padding: 10px;
-            font-size: 12px; line-height: 1.2;
-        }
-        .cmd-line { color: #fff; font-weight: bold; }
-        .cmd-line::before { content: "root@kali:~# "; color: var(--accent); }
-
-        /* プログレスバー */
-        .p-bar-bg { width: 100%; background: #111; height: 4px; margin: 8px 0; }
-        .p-bar-fill { height: 100%; background: var(--text-main); width: 0%; transition: width 0.3s; }
-
-        button.exec-btn {
-            width: 100%; background: transparent; border: 1px solid var(--text-main);
-            color: var(--text-main); padding: 8px; cursor: pointer; font-family: inherit; font-weight: bold;
-        }
-        button.exec-btn:hover { background: var(--text-main); color: #000; }
-
-        .hidden { display: none; }
-    </style>
+    <title>CYBER-AUDIT PLATFORM [v5.0 FINAL]</title>
+    <link rel="stylesheet" href="terminal_system_style.css">
 </head>
 <body>
 
-<div class="top-bar">
-    <div>SESSION: ACTIVE [PID: 4821]</div>
-    <div>IP: 192.168.x.x (VPN_TUNNEL_ESTABLISHED)</div>
-    <div id="clock">00:00:00</div>
-</div>
-
-<div class="layout">
-    <div class="panel recon-box">
-        <h2>01. RECONNAISSANCE</h2>
-        <p style="font-size: 10px; color: #555;">Target Selection & IP Discovery</p>
-        <input type="text" id="target-url" placeholder="Enter Domain (e.g. target.com)">
-        <button class="exec-btn" onclick="startRecon()">EXECUTE NSLOOKUP</button>
-        <div id="recon-output" style="margin-top:15px; font-size: 11px; line-height: 1.5;">
-            [SYSTEM] Awaiting Target...
-        </div>
-    </div>
-
+<div class="grid">
     <div class="panel">
-        <div class="tab-nav">
-            <button class="tab-btn active" onclick="switchMod('scanner')">PORT_SCAN</button>
-            <button class="tab-btn" onclick="switchMod('brute')">BRUTE_FORCE</button>
-            <button class="tab-btn" onclick="switchMod('wifi')">802.11_MONITOR</button>
-        </div>
+        <h2 style="color: var(--blue);">AUDIT CONTROL</h2>
+        <input type="text" id="target-domain" placeholder="Target Server URL/IP">
+        <button onclick="startFullAudit()">START FULL AUDIT</button>
 
-        <div id="mod-scanner">
-            <h2>NMAP SERVICE DETECTION</h2>
-            <button class="exec-btn" onclick="runNmap()">RUN STEALTH SCAN (SYN)</button>
-            <div id="scan-view" style="margin-top:10px;"></div>
-        </div>
-
-        <div id="mod-brute" class="hidden">
-            <h2>DICTIONARY ATTACK (WPA2/SSH)</h2>
-            <p style="font-size: 10px;">Hash Type: NetNTLMv2 / Wordlist: rockyou.txt</p>
-            <button class="exec-btn" onclick="runBrute()">START CRACKING</button>
-            <div id="brute-view" style="margin-top:10px;">
-                <div class="p-bar-bg"><div id="brute-fill" class="p-bar-fill"></div></div>
-                <div id="brute-stat">Progress: 0.0%</div>
+        <div class="health-box">
+            <h2>TARGET HEALTH</h2>
+            <div id="health-monitor">
+                <span id="health-dot" class="status-dot offline"></span>
+                <span id="health-text">MONITOR IDLE</span>
+                <div class="latency">Latency: <span id="latency-ms">--</span>ms</div>
             </div>
         </div>
 
-        <div id="mod-wifi" class="hidden">
-            <h2>AIRMON-NG INTERFACE</h2>
-            <button class="exec-btn" onclick="runWifi()">MONITOR MODE: START</button>
-            <div id="wifi-view"></div>
+        <div id="steps-container" style="margin-top: 20px;">
+            <div id="step-1" class="audit-step">1. ターゲット偵察 (OSINT)</div>
+            <div id="step-2" class="audit-step">2. サービス・クローリング</div>
+            <div id="step-3" class="audit-step">3. 脆弱性照合 (CVE matching)</div>
+            <div id="step-4" class="audit-step">4. レポート生成</div>
         </div>
     </div>
 
-    <div class="panel" style="grid-column: span 2; padding: 0;">
-        <div class="terminal-log" id="term-log">
-            <div><span style="color:var(--warning)">[!] SYSTEM INITIALIZED. WELCOME TO OPERATIONAL TERMINAL.</span></div>
+    <div class="panel" id="display-panel">
+        <div id="terminal-view">
+            <h2 style="color: var(--main);">LIVE OPERATION MONITOR</h2>
+            <div class="console" id="log">SYSTEM READY. AWAITING TARGET...</div>
         </div>
+        
+        <div id="report-area">
+            <p style="text-align: right;">DATE: 2026/01/18</p>
+            <h1>VULNERABILITY ASSESSMENT REPORT</h1>
+            <p>Target: <span id="rep-target"></span></p>
+            <hr>
+            <h2>Summary</h2>
+            <p>分析結果に基づき、以下の脆弱性が検出されました。IDをクリックするとExploitコードを表示します。</p>
+            <table border="1" id="vuln-table">
+                <thead>
+                    <tr><th>ID (Clickable)</th><th>Severity</th><th>Description</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td class="cve-id">CVE-2023-3482</td><td class="critical">CRITICAL</td><td>Remote Code Execution in Web Server</td></tr>
+                    <tr><td class="cve-id">CVE-2024-1002</td><td class="medium">MEDIUM</td><td>Information Disclosure via Headers</td></tr>
+                </tbody>
+            </table>
+            <button onclick="window.print()" class="report-btn">PRINT TO PDF</button>
+            <button onclick="location.reload()" class="report-btn secondary">BACK TO TERMINAL</button>
+        </div>
+    </div>
+
+    <div class="panel console-bottom">
+        <div id="sub-log">[SYSTEM]: All modules loaded. Cyber Kill Chain ready.</div>
     </div>
 </div>
 
-<script>
-    function updateClock() {
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString();
-    }
-    setInterval(updateClock, 1000);
+<div id="exploit-db-overlay">
+    <h2 id="exploit-title">CVE EXPLOIT CODE</h2>
+    <pre id="exploit-code"></pre>
+    <button onclick="closeExploit()" class="close-btn">CLOSE DATABASE</button>
+</div>
 
-    function log(msg, type = 'info') {
-        const log = document.getElementById('term-log');
-        const div = document.createElement('div');
-        const colors = { info: 'var(--text-main)', warn: 'var(--warning)', err: 'var(--danger)', cmd: '#fff' };
-        
-        if (type === 'cmd') {
-            div.className = 'cmd-line';
-        } else {
-            div.style.color = colors[type];
-            div.innerText = `[${new Date().toLocaleTimeString()}] [${type.toUpperCase()}] ${msg}`;
-        }
-        if(type === 'cmd') div.innerText = msg;
-
-        log.prepend(div);
-    }
-
-    function switchMod(mod) {
-        ['scanner', 'brute', 'wifi'].forEach(m => document.getElementById('mod-'+m).classList.add('hidden'));
-        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('mod-'+mod).classList.remove('hidden');
-        event.currentTarget.classList.add('active');
-        log(`Loading module: ${mod}.so`, 'info');
-    }
-
-    async function startRecon() {
-        const target = document.getElementById('target-url').value;
-        if(!target) return;
-        log(`nslookup ${target}`, 'cmd');
-        log("Querying DNS root servers...");
-        
-        try {
-            const res = await fetch(`http://ip-api.com/json/${target}`);
-            const d = await res.json();
-            document.getElementById('recon-output').innerHTML = `
-                <span style="color:var(--accent)">ADDRESS IDENTIFIED</span><br>
-                IP: ${d.query}<br>ASN: ${d.as}<br>LOC: ${d.city}, ${d.country}<br>
-                ISP: ${d.isp}
-            `;
-            log("Host discovery complete. Vector map updated.");
-        } catch(e) { log("Target resolution failed.", "err"); }
-    }
-
-    async function runNmap() {
-        log(`nmap -sS -Pn -A ${document.getElementById('target-url').value || 'Target'}`, 'cmd');
-        const ports = [21, 22, 80, 443, 3306, 8080];
-        const view = document.getElementById('scan-view');
-        view.innerHTML = "";
-        
-        for(let p of ports) {
-            await new Promise(r => setTimeout(r, 600));
-            log(`TCP SYN stealth scan: Port ${p}/tcp is OPEN`);
-            view.innerHTML += `<div style="font-size:11px;">PORT ${p}: OPEN (Service: ${p==443?'SSL':p==80?'HTTP':'Service-Found'})</div>`;
-        }
-        log("Nmap done: 1 IP address (1 host up) scanned.", "warn");
-    }
-
-    async function runBrute() {
-        log("hcxtools: Captured PMKID handshake. Starting hashcat...", "warn");
-        const fill = document.getElementById('brute-fill');
-        const stat = document.getElementById('brute-stat');
-        
-        for(let i=0; i<=100; i+=2) {
-            await new Promise(r => setTimeout(r, 100));
-            fill.style.width = i + "%";
-            stat.innerText = `Testing: rockyou.txt (${i}.0%) - ETA: 00:02`;
-            if(i % 20 === 0) log(`Current keyspace: ${i*12800}/sec...`);
-            if(i === 100) {
-                log("CRACKING SUCCESSFUL: Passphrase 'admin2023' matched.", "info");
-                alert("MATCH FOUND: admin2023");
-            }
-        }
-    }
-
-    function runWifi() {
-        log("airmon-ng start wlan0", "cmd");
-        setTimeout(() => {
-            log("Monitor mode enabled on wlan0mon", "info");
-            document.getElementById('wifi-view').innerHTML = `<pre style="font-size:10px; color:#555;">
-BSSID              PWR  BEACONS  #DATA
-00:11:22:AA:BB:CC  -42       82     14
-AA:CC:DD:11:22:33  -78       12      0</pre>`;
-        }, 1000);
-    }
-</script>
-
+<script src="terminal_system_script.js"></script>
 </body>
 </html>
