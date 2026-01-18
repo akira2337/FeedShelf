@@ -1,0 +1,60 @@
+:root {
+    --bg: #010409;
+    --panel: #0d1117;
+    --border: #30363d;
+    --main: #00ff41;
+    --dim: #003b00;
+    --blue: #58a6ff;
+    --red: #f85149;
+}
+
+body {
+    background: var(--bg);
+    color: var(--main);
+    font-family: 'Consolas', 'Monaco', monospace;
+    padding: 10px; margin: 0;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    grid-template-rows: 1fr 180px;
+    gap: 10px; height: 98vh;
+}
+
+.panel {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    padding: 15px; overflow-y: auto;
+}
+
+h2 { font-size: 11px; margin-top: 0; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+
+/* 死活監視 */
+.health-box { margin-top: 15px; border: 1px dashed var(--blue); padding: 10px; }
+.status-dot { height: 8px; width: 8px; border-radius: 50%; display: inline-block; margin-right: 5px; }
+.online { background-color: var(--main); box-shadow: 0 0 8px var(--main); animation: blink 2s infinite; }
+.offline { background-color: var(--red); box-shadow: 0 0 8px var(--red); }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+.latency { font-size: 10px; color: #555; margin-top: 5px; }
+
+/* コンソール */
+.console { background: #000; height: 100%; padding: 10px; font-size: 12px; border: 1px solid var(--border); overflow-y: scroll; color: #adbac7; line-height: 1.4; }
+.console-bottom { grid-column: span 2; background: #000; font-size: 11px; color: #555; }
+
+/* 攻撃コード・ポップアップ */
+#exploit-db-overlay {
+    position: fixed; top: 10%; left: 10%; width: 80%; height: 80%;
+    background: #000; border: 2px solid var(--blue); z-index: 1000;
+    display: none; padding: 20px; box-shadow: 0 0 50px #000;
+}
+#exploit-code { color: var(--blue); font-size: 12px; height: 80%; overflow: auto; background: #050505; padding: 15px; border: 1px solid #222; }
+
+/* レポート画面 */
+#report-area { display: none; background: #fff; color: #333; padding: 40px; border-radius: 4px; font-family: sans-serif; height: 100%; }
+.cve-id { cursor: pointer; color: var(--blue); text-decoration: underline; font-weight: bold; }
+.critical { color: var(--red); font-weight: bold; }
+
+input { width: 100%; background: #000; border: 1px solid var(--border); color: var(--main); padding: 10px; box-sizing: border-box; margin-bottom: 10px; outline: none; }
+button { width: 100%; padding: 10px; background: transparent; border: 1px solid var(--main); color: var(--main); cursor: pointer; font-weight: bold; transition: 0.2s; }
+button:hover { background: var(--main); color: #000; }
